@@ -1,0 +1,4 @@
+Commands : docker run -it devopsdockeruh/pull_exercise
+           basics
+
+Secret Message : "This is the secret message"

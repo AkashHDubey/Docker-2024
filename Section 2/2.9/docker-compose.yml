@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+
+  proxy:
+    image: nginx
+    volumes:
+    - type: bind
+      source: ./nginx.conf
+      target: /etc/nginx/nginx.conf
+    container_name: nginx-reverse-proxy
+    ports:
+      - 80:80
+    depends_on:
+      - example-frontend
+      - example-backend
+
+  example-frontend:
+    build: "./example-frontend"
+    container_name: example-frontend
+    ports:
+      - 5000:5000
+    # environment:
+      # - REACT_APP_BACKEND_URL="http://localhost:8080"
+
+
+  example-backend:
+    build: "./example-backend"
+    container_name: example-backend
+    ports:
+      - 8080:8080
+    environment:
+      - PORT=8080
+      # - REQUEST_ORIGIN=http://localhost:5000
+      - REDIS_HOST=redis-cache
+      - POSTGRES_HOST=db
+      - POSTGRES_USER=posgres
+      - POSTGRES_PASSWORD=posgres
+      - POSTGRES_DATABASE=my-db
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    restart: unless-stopped
+    container_name: db
+    volumes:
+      - type: bind
+        source: ./database
+        target: /var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=posgres
+      - POSTGRES_PASSWORD=posgres
+      - POSTGRES_DB=my-db
+
+  redis-cache:
+    image: redis
+    container_name: redis-cache
+
