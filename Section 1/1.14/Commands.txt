@@ -1,0 +1,11 @@
+docker build . -t  backend-s
+docker run -p 8080:8080 backend-s
+
+docker build . -t  frontend-s
+docker run -p 5000:5000 frontend-s
+
+
+
+
+
+
